@@ -11,7 +11,7 @@ The original pipeline is described in:
 
 Changes fall into two categories:
 1. **Scientific extension** — NCC-based uncertainty weighting in the 3D velocity inversion
-2. **Bug fixes** — Corrections to offset tracking, interpolation, and DEM download
+2. **Refinementes** — Corrections to offset tracking, interpolation, and DEM download
 
 ---
 
@@ -70,7 +70,7 @@ python stack_pipeline.py -t_asc ASC_TXT -t_des DES_TXT --config CONFIG [--sigma_
 
 ---
 
-## 2. Bug Fix — Offset Tracking Array Bounds (`glacier_stacking_autoRIFT.py`)
+## 2. Refinement — Offset Tracking Array Bounds (`glacier_stacking_autoRIFT.py`)
 
 **Function:** `compute_dx`  
 **Issue:** Upscaling window `res[maxLoc[1]-3:maxLoc[1]+4, maxLoc[0]-3:maxLoc[0]+4]` could go out of bounds when the NCC peak (`maxLoc`) is within 3 pixels of the correlation surface edge, causing a crash or silently returning an empty array.
@@ -87,7 +87,7 @@ res_up = upscale(res[y1:y2, x1:x2], scale, type=interp)
 
 ---
 
-## 3. Bug Fix — Chip Scale Aspect Ratio (`testautoRIFT_ISCE.py`)
+## 3. Refinement — Chip Scale Aspect Ratio (`testautoRIFT_ISCE.py`)
 
 **Function:** `runAutorift`  
 **Issue:** `ScaleChipSizeY` was hardcoded to `1`, implicitly assuming square pixels in radar geometry. Sentinel-1 IW mode has non-square pixels (range ≠ azimuth pixel spacing), so chips were being stretched incorrectly on the ground.
@@ -102,7 +102,7 @@ obj.ScaleChipSizeY = pixsizex / pixsizey  # Correct proportion for square chips 
 
 ---
 
-## 4. Bug Fix — BSpline Axis Order (`offset_tracking/util.py`)
+## 4. Refinement — BSpline Axis Order (`offset_tracking/util.py`)
 
 **Function:** `BSpline`  
 **Issue:** `scipy.interpolate.RectBivariateSpline` expects `(row_coords, col_coords, data)` but the original code passed `(x, y, z)` where `x` was column indices and `y` was row indices — a transposed axis order. This caused the interpolated output to be transposed relative to the input, introducing a directional error in upscaled NCC surfaces.
@@ -119,7 +119,7 @@ z_interp = spline(new_y, new_x)
 
 ---
 
-## 5. Bug Fix — DEM Download Robustness (`preprocessing/setup_env.py`)
+## 5. Refinement — DEM Download Robustness (`preprocessing/setup_env.py`)
 
 Three issues corrected:
 
@@ -158,10 +158,10 @@ Required for the `.rio` accessor on `xarray.DataArray` objects. Was missing, cau
 |------|------|
 | `batch3Dinversion.py` | Scientific extension + improvement |
 | `stack_pipeline.py` | New CLI argument |
-| `offset_tracking/glacier_stacking_autoRIFT.py` | Bug fix |
-| `offset_tracking/testautoRIFT_ISCE.py` | Bug fix |
-| `offset_tracking/util.py` | Bug fix |
-| `preprocessing/setup_env.py` | Bug fix + robustness |
+| `offset_tracking/glacier_stacking_autoRIFT.py` | Refinement |
+| `offset_tracking/testautoRIFT_ISCE.py` | Refinement |
+| `offset_tracking/util.py` | Refinement |
+| `preprocessing/setup_env.py` | Refinement + robustness |
 | `.gitignore` | Added credential/config protection |
 | `configs/` | Paths reset to generic placeholders |
 
