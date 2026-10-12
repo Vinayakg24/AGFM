@@ -559,9 +559,14 @@ def compute_dx(ChipShape, ChipI, RefShape, RefI, scale=1, interp='spline'):
     res_up = res.copy()
 
     if scale > 1:
-        xstart = maxLoc[0]-3
-        ystart = maxLoc[1]-3
-        res_up = upscale(res[maxLoc[1]-3:maxLoc[1]+4, maxLoc[0]-3:maxLoc[0]+4], scale, type=interp)
+        y1 = max(0, maxLoc[1]-3)
+        y2 = min(res.shape[0], maxLoc[1]+4)
+        x1 = max(0, maxLoc[0]-3)
+        x2 = min(res.shape[1], maxLoc[0]+4)
+        
+        xstart = x1
+        ystart = y1
+        res_up = upscale(res[y1:y2, x1:x2], scale, type=interp)
 
         (_, maxVal, _, maxLoc) = cv2.minMaxLoc(res_up)
         dX, dY = maxLoc

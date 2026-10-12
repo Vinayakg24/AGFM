@@ -9,11 +9,11 @@ def BSpline(z, factor):
     c, r = z.shape
     x = np.arange(0, r, 1)
     y = np.arange(0, c, 1)
-    spline = RectBivariateSpline(x, y, z)
+    spline = RectBivariateSpline(y, x, z)
     
     new_x = np.arange(0, r - 1e-10, (1/factor))
     new_y = np.arange(0, c - 1e-10, (1/factor))
-    z_interp = spline(new_x, new_y)
+    z_interp = spline(new_y, new_x)
 
     return z_interp
 

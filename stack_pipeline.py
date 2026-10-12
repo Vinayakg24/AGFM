@@ -18,6 +18,10 @@ def cmdLineParse():
     parser.add_argument('-t_asc', '--download_asc_txt', type=str, required=True, help="Data Ascending txt file")
     parser.add_argument('-t_des', '--download_des_txt', type=str, required=True, help="Data Descending txt file")
     parser.add_argument('--config', type=str, default="./configs/pipeline_config.json", help="Pipeline config file")
+    parser.add_argument('--sigma_base', type=str, default=None,
+                        help="Base directory of De Zan sigma_NCC maps produced by "
+                             "compute_ncc_uncertainty_v2.py (e.g. /mnt/Vinayak/UNCERTAINTY/Final). "
+                             "If omitted, equal weights are used in the 3D inversion.")
     # parser.add_argument('--dem', dest="dem_path", type=str, required=True, help="Path for DEM file")
     return parser.parse_args()
 
@@ -95,7 +99,11 @@ def main(inps):
     print("Current working directory:", os.getcwd())
     df = pd.read_csv(f'{config["save_path"]}/stack_asc/image_pairs.csv')
     id_master_slave = np.array([df['Id'].tolist(), df['Master'].tolist(), df['Slave'].tolist()]).T
-    batch_inversion(id_master_slave, f'{config["save_path"]}/stack_asc/', f'{config["save_path"]}/stack_des/', f'{config["save_path"]}/3D_Velocities/')
+    batch_inversion(id_master_slave,
+                    f'{config["save_path"]}/stack_asc/',
+                    f'{config["save_path"]}/stack_des/',
+                    f'{config["save_path"]}/3D_Velocities/',
+                    sigma_base=inps.sigma_base)
 
 
 

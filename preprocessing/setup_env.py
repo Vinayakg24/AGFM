@@ -1,4 +1,3 @@
-from turtle import down
 import os
 import json
 import numpy as np
@@ -7,6 +6,7 @@ import isce
 import isceobj
 from isce.applications.gdal2isce_xml import gdal2isce_xml
 
+import rioxarray  # required for .rio accessor on xarray objects
 import odc.stac
 import pystac_client
 import planetary_computer            
@@ -56,20 +56,23 @@ def download_COP30_DEM(roi, out_path='dem.tif'):
                 raise Exception("No DEM items found for the given ROI.")
 
             # 3. Load the data using odc-stac
-            data = odc.stac.load(
+            ds = odc.stac.load(
                 items,
                 bands=["data"],
                 bbox=bound,
-            ).squeeze()
+            )
+            # odc.stac.load returns an xarray.Dataset; select the 'data' band
+            # to get a DataArray, then remove the time dimension if present
+            data = ds["data"].squeeze()
 
-            # 4. Save the data as a GeoTIFF
+            # 4. Save the data as a GeoTIFF via rioxarray
             data.rio.to_raster(out_path)
             print(f"Successfully downloaded and saved DEM to {out_path}")
             print("----------------------------------------------------")
 
         except Exception as e:
             print(f"Failed to download DEM. Error: {e}")
-            return None # Exit if download fails
+            raise  # Re-raise so download_DEM knows the download failed
 
 
 def download_DEM(roi, out_path='dem.tif'):
@@ -77,9 +80,17 @@ def download_DEM(roi, out_path='dem.tif'):
     bound = (roi[2]-1, roi[0]-1, roi[3]+1, roi[1]+1)
     
     # Download COP30 DEM
-    download_COP30_DEM(roi, out_path)
-        
-    ds =  gdal.Open(out_path, gdal.GA_ReadOnly)
+    try:
+        download_COP30_DEM(roi, out_path)
+    except Exception as e:
+        raise RuntimeError(f"DEM download failed, cannot continue: {e}") from e
+
+    ds = gdal.Open(out_path, gdal.GA_ReadOnly)
+    if ds is None:
+        raise FileNotFoundError(
+            f"gdal.Open could not open '{out_path}'. "
+            "The DEM file may not have been created correctly."
+        )
     width = ds.RasterXSize
     length = ds.RasterYSize
     transform = ds.GetGeoTransform()

@@ -252,7 +252,7 @@ def runAutorift(IMG, xGrid, yGrid, SRx0, SRy0, CSMINx0, CSMINy0, CSMAXx0, CSMAXy
     ChipSizeX0_PIX_grd = int(np.ceil(chipsizex0 / pixsizex / 4) * 4)
     ChipSizeX0_PIX_azm = int(np.ceil(chipsizex0 / pixsizey / 4) * 4)
     # obj.ScaleChipSizeY = 0.25 #int(pixsizex/pixsissssszey)
-    obj.ScaleChipSizeY = 1 #ChipSizeX0_PIX_azm/ChipSizeX0_PIX_grd
+    obj.ScaleChipSizeY = pixsizex / pixsizey # Correct proportion for square chips on ground
     obj.ChipSizeMaxX = (chip_max / chipsizex0) * ChipSizeX0_PIX_grd
     obj.ChipSizeMinX = (chip_min / chipsizex0) * ChipSizeX0_PIX_grd
     obj.GridSpacingX = int(obj.ChipSize0X // 2)

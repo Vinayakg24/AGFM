@@ -2,10 +2,10 @@
     "num_threads": 64,
     "chip_min": 240,
     "chip_max": 960,
-    "asc_dec_deltaT": 1,
-    "Orbit_dir": "/DATA/S2_Data/orbit/",
-    "aux_dir": "/DATA/S2_Data/aux/",
-    "cred_config": "config/credentials.json",
-    "fails": "/DATA/fails.txt",
+    "asc_dec_deltaT": 4,
+    "Orbit_dir": "/path/to/S1_Data/Orbits/",
+    "aux_dir": "/path/to/S1_Data/aux/",
+    "cred_config": "/path/to/AGFM/configs/credentials.json",
+    "fails": "/path/to/fails.txt",
     "ROI": "[32.06, 32.60, 77.09, 77.82]"
 }

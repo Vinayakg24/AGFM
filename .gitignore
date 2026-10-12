@@ -10,6 +10,8 @@ data/*.txt
 .vscode/
 *.log
 */.~lock*
+configs/credentials.json
 configs/data_config.json
+configs/pipeline_config.json
 stack/topsStack/Stack.py
 offset_scratch.py
